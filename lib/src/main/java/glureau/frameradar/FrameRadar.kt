@@ -23,8 +23,8 @@ object FrameRadar {
         application: Application,
         screenPosition: ScreenPosition = ScreenPosition.BOTTOM_RIGHT,
         sizeInPx: Int = 200
-    ) {
-        application.registerActivityLifecycleCallbacks(object :
+    ): Application.ActivityLifecycleCallbacks {
+        val callbacks = object :
             ActivityLifecycleCallbacksAdapter() {
             var currentView: FrameRadarView? = null
             override fun onActivityResumed(activity: Activity) {
@@ -37,7 +37,13 @@ object FrameRadar {
                     currentView = null
                 }
             }
-        })
+        }
+        application.registerActivityLifecycleCallbacks(callbacks)
+        return callbacks
+    }
+
+    fun disable(application: Application, callbacks: Application.ActivityLifecycleCallbacks) {
+        application.unregisterActivityLifecycleCallbacks(callbacks)
     }
 
     fun enable(
